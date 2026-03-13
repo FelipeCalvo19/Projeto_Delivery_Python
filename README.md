@@ -17,7 +17,7 @@ Este é um projeto de estudo desenvolvido para simular o backend de um sistema d
 * **Recibo Detalhado:** Exibição do valor bruto vs. valor com desconto (economia gerada).
 
 ## 💻 Exemplo de Saída no Terminal
-Qual seu Nome?Felipe
+''' Qual seu Nome?Felipe
 Quantos Anos voce tem?21
 Oi Felipe, tudo bem?
 Voce deseja fazer um pedido? (s/n)s
@@ -43,3 +43,4 @@ TOTAL A PAGAR: R$39.60
 ==============================
 Obrigado por pedir conosco Felipe! Tenha um ótimo dia!
 ==============================
+'''
