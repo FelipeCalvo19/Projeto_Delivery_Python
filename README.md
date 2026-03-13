@@ -34,4 +34,5 @@ Bebida: R$7.00
 Entrega: R$12.00 (incluindo taxa adicional por clima chuvoso)SUBTOTAL: R$44.00 
 DESCONTO: R$4.40 (10% OFF)
 TOTAL A PAGAR: R$39.60
-Parabens! Voce ganhou um Desconto de 10% Aproveite!Obrigado por pedir conosco Felipe! Tenha um ótimo dia!```
+Parabens! Voce ganhou um Desconto de 10% Aproveite!
+Obrigado por pedir conosco Felipe! Tenha um ótimo dia!```
