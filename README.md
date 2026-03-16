@@ -44,4 +44,4 @@ Entrega:  R$10.00 (incluindo taxa adicional por clima chuvoso)
 SUBTOTAL: R$35.00
 TOTAL A PAGAR: R$35.00
 ==============================
-Obrigado por pedir conosco Felipe Josue! Tenha um ótimo dia!```
+Obrigado por pedir conosco Felipe! Tenha um ótimo dia!```
