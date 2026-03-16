@@ -15,24 +15,33 @@ Este é um projeto de estudo desenvolvido para simular o backend de um sistema d
 * **Cálculo de Frete:** Tabela progressiva de frete por KM + adicional por clima chuvoso.
 * **Sistema de Desconto:** Gatilho automático de 10% de desconto para pedidos acima de R$ 40,00.
 * **Recibo Detalhado:** Exibição do valor bruto vs. valor com desconto (economia gerada).
+## 🏛️ Organização Profissional
+O projeto utiliza o padrão **`def main()`**, seguindo as melhores práticas da indústria:
+* **Encapsulamento**: A lógica de execução é isolada das funções de cálculo.
+* **Ponto de Entrada**: Uso da estrutura `if __name__ == "__main__":` para garantir que o script seja executado de forma controlada.
+* **Escopo de Variáveis**: Melhor gerenciamento de memória e segurança dos dados dentro do fluxo principal.
 
 ## 💻 Exemplo de Saída no Terminal
-```tex tQual seu Nome? Felipe
-Quantos Anos voce tem? 21
+```text █▀█ █▀▀ █▄░█ ▄▀█ ▀█▀ ▄▀█ █▀█   █░░ ▄▀█ █▄░█ █▀▀ █░█ █▀▀ █▀
+    █▀▄ ██▄ █░▀█ █▀█ ░█░ █▀█ █▄█   █▄▄ █▀█ █░▀█ █▄▄ █▀█ ██▄ ▄█
+
+Qual seu Nome?Felipe
+Quantos Anos voce tem?20
 Oi Felipe, tudo bem?
-Voce deseja fazer um pedido? (s/n) s
-Qual lanche você gostaria de pedir? pizza
-Otima escolha! O preço do seu lanche é R$25.00 
-Você gostaria de Adicionar uma bebida? (s/n) s 
-Qual Bebida voce gostaria? cerveja 
-Otima escolha! o preco da sua bebida é R$7.00
-você mora a quantos km do local de entrega? 15
-Como está o clima hoje? chuvoso
-============================== RECIBO DE COMPRA ==============================
-Lanche: Pizza
-Bebida: R$7.00 
-Entrega: R$12.00 (incluindo taxa adicional por clima chuvoso)SUBTOTAL: R$44.00 
-DESCONTO: R$4.40 (10% OFF)
-TOTAL A PAGAR: R$39.60
-Parabens! Voce ganhou um Desconto de 10% Aproveite!
-Obrigado por pedir conosco Felipe! Tenha um ótimo dia!```
+Voce deseja fazer um pedido? (s/n)s
+Qual lanche você gostaria de pedir? (hambúrguer, pizza, salada)pizza
+Otima escolha! O preço do seu lanche é R$25.00
+Você gostaria de Adicionar uma bebida?(s/n)n
+você mora a quantos km do local de entrega?15
+Como está o clima hoje? (ensolarado, chuvoso, nublado)chuvoso
+==============================
+        RECIBO DE COMPRA
+==============================
+Lanche:   Pizza R$25.00
+Bebida:   Nenhuma R$0.00
+Entrega:  R$10.00 (incluindo taxa adicional por clima chuvoso)
+------------------------------
+SUBTOTAL: R$35.00
+TOTAL A PAGAR: R$35.00
+==============================
+Obrigado por pedir conosco Felipe Josue! Tenha um ótimo dia!```
