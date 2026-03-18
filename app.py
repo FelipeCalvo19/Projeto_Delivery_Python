@@ -5,35 +5,47 @@
 import os
 
 # ---------------------------------------------------------
-# FUNÇÕES DE INTERFACE E COMUNICAÇÃO
+# VARIÁVEIS GLOBAIS (ESTADO DO SISTEMA)
+# ---------------------------------------------------------
+# Armazena apenas os números (floats) de cada venda finalizada
+historico_faturamento = [] 
+
+# Dicionário para o Ranking: Chave = Nome do Cliente | Valor = Total acumulado
+# Escolhemos dicionário pela busca rápida O(1) e facilidade de somar valores por chave
+rank_gastos = {}
+
+# ---------------------------------------------------------
+# FUNÇÕES DE INTERFACE E AUXILIARES
 # ---------------------------------------------------------
 
 def Boas_vindas(Nome):
-    """Gera saudação personalizada."""
+    """Retorna saudação. Exemplo de uso de f-strings para interpolação."""
     return f"Oi {Nome}, tudo bem?"
 
 def Despedidas(Nome):
-    """Gera mensagem de encerramento amigável."""
     return f"Obrigado por pedir conosco {Nome}! Tenha um ótimo dia!"
 
 def Criar_Linhas(Divisor):
-    """Cria separadores visuais para organizar o terminal."""
+    """Multiplicação de strings para criar separadores visuais dinâmicos."""
     return Divisor * 30
 
 def Conversor_Valor(Valor, cifra):
-    """Formata números para o padrão monetário R$ 0,00."""
+    """Formatação de moeda usando .2f para garantir duas casas decimais."""
     return f"{cifra}{Valor:.2f}"
 
 # ---------------------------------------------------------
-# LÓGICA DE PRODUTOS E PREÇOS (CARDÁPIOS)
+# LÓGICA DE PRODUTOS (CARDÁPIOS)
 # ---------------------------------------------------------
 
 def Cardapio_Lanches():
-    """Exibe a lista detalhada de lanches e seus ingredientes (Usa Lista de Dicionários)."""
+    """
+    Usa uma Lista de Dicionários. Ideal quando cada item tem múltiplas 
+    propriedades (Nome, Valor, Ingredientes).
+    """
     cardapio = [
-        {"Lanche": "hambúrguer", "Valor": 10.00, "Ingredientes": "Pão, Carne, Alface, Tomate, Queijo, Presunto e Molhos da Casa"},
-        {"Lanche": "pizza", "Valor": 20.00, "Ingredientes": "Molho de Tomate, Queijo e Calabresa"},
-        {"Lanche": "salada", "Valor": 5.00, "Ingredientes": "Alface, Tomate, Azeitona, Azeite, Pepino e Cebola"}
+        {"Lanche": "hambúrguer", "Valor": 10.00, "Ingredientes": "Pão, Carne, Alface..."},
+        {"Lanche": "pizza", "Valor": 20.00, "Ingredientes": "Molho de Tomate, Queijo..."},
+        {"Lanche": "salada", "Valor": 5.00, "Ingredientes": "Alface, Tomate..."}
     ]
     print("\n--- CARDÁPIO DE LANCHES ---")
     for item in cardapio:
@@ -42,12 +54,14 @@ def Cardapio_Lanches():
     print(Criar_Linhas("="))
 
 def Preco_Lanches(Lanche_escolhido):
-    """Busca o preço de forma instantânea (Usa Dicionário Puro para performance)."""
+    """
+    Usa Dicionário Simples para busca direta. 
+    O método .get() evita erros caso o lanche não exista (retorna 0.00).
+    """
     Valores = {"hambúrguer": 10.00, "pizza": 20.00, "salada": 5.00}
     return Valores.get(Lanche_escolhido, 0.00)
 
 def Cardapio_Bebidas():
-    """Exibe as opções de bebidas disponíveis."""
     cardapioB = [
         {"Bebida": "refri", "Valor": 5.00},
         {"Bebida": "suco", "Valor": 5.50},
@@ -60,7 +74,6 @@ def Cardapio_Bebidas():
     print(Criar_Linhas("="))
 
 def Preco_Bebidas(Bebida_escolhida):
-    """Retorna o valor da bebida selecionada."""
     Valores = {"refri": 5.00, "suco": 5.50, "cerveja": 6.00}
     return Valores.get(Bebida_escolhida, 0.00)
 
@@ -69,26 +82,64 @@ def Preco_Bebidas(Bebida_escolhida):
 # ---------------------------------------------------------
 
 def DetectorDidade(Idade):
-    """Verifica maioridade legal para venda de álcool."""
+    """Retorna um Booleano (True/False)."""
     return Idade >= 18
 
-def calcular_Desconto(valortotal):
-    """Aplica regra de 10% de desconto sobre o valor total."""
-    return valortotal * 0.9
+def calcular_Desconto(porcentagem):
+    """
+    Exemplo de 'Closure': Uma função que fabrica outra função.
+    Útil para fixar uma taxa de desconto e reutilizá-la depois.
+    """
+    def aplicar(valor_total):
+        return valor_total * porcentagem
+    return aplicar
+
+# Criando as instâncias de desconto (80% do valor e 90% do valor)
+desconto_membro_clube = calcular_Desconto(0.8)
+desconto_membro_comum = calcular_Desconto(0.9)
+
+def exibir_relatorio():
+    """Processa e exibe os dados acumulados durante a execução."""
+    print("\n" + Criar_Linhas("="))
+    print("       RELATÓRIO DO DIA")
+    print(Criar_Linhas("="))
+    
+    # sum() percorre a lista historico_faturamento e soma tudo
+    total = sum(historico_faturamento)
+    print(f"Faturamento total: {Conversor_Valor(total, 'R$')}")
+    print(f"Total de vendas:   {len(historico_faturamento)}")
+    
+    print(Criar_Linhas("="))
+    print("-----RANK-----")
+    
+    # ORDENAÇÃO: sorted() transforma o dicionário em uma lista de tuplas ordenada.
+    # key=lambda item: item[1] diz para ordenar pelo VALOR (gasto), não pela CHAVE (nome).
+    # reverse=True coloca do maior para o menor.
+    rankcliente = sorted(rank_gastos.items(), key=lambda item: item[1], reverse=True)
+    
+    # len() no dicionário conta quantos Nomes únicos existem.
+    QuantCliente = len(rank_gastos)
+    print(f"Quantidade de Clientes Únicos: {QuantCliente}")
+    
+    # Desempacotamento de Tuplas (cliente, gasto) vindo da lista ordenada
+    for cliente, gasto in rankcliente:
+        print(f"Cliente: {cliente.capitalize()}  | Total: {Conversor_Valor(gasto, 'R$')}")
+        
+    print(Criar_Linhas("="))   
 
 # ---------------------------------------------------------
 # FLUXO PRINCIPAL DO SISTEMA
 # ---------------------------------------------------------
 
 def main():
-    # Título do Sistema em ASCII
     print ("""
     █▀█ █▀▀ █▄░█ ▄▀█ ▀█▀ ▄▀█ █▀█   █░░ ▄▀█ █▄░█ █▀▀ █░█ █▀▀ █▀
     █▀▄ ██▄ █░▀█ █▀█ ░█░ █▀█ █▄█   █▄▄ █▀█ █░▀█ █▄▄ █▀█ ██▄ ▄█""")
     
     Nome = input("\nQual seu Nome? ")
+    membro = input("\nVocê é um membro do clube? (s/n) ")
     
-    # Loop de validação de entrada numérica (Idade)
+    # TRATAMENTO DE ERROS: Garante que o programa não trave se o usuário digitar letras na idade.
     while True:
         try:
             idade = int(input("Quantos Anos voce tem? "))
@@ -103,38 +154,55 @@ def main():
         print("Entendido, se precisar de algo é só chamar!")
         return
 
-    # --- PROCESSO DE COMPRA: LANCHE ---
+    # --- LANCHES ---
     os.system("cls" if os.name == "nt" else "clear")
     Cardapio_Lanches()
-    lanche = input("Qual lanche você gostaria de pedir? ").lower().strip()
-    preco = Preco_Lanches(lanche)
-
-    if preco == 0.00:
-        print("Lanche inválido. Pedido cancelado.")
-        return
+    total_lanches = 0.00
+    lanches_pedidos = []
     
-    print(f"Otima escolha! Preço: {Conversor_Valor(preco, 'R$')}")
+    while True:
+        lanche = input("Qual lanche você gostaria de pedir? ").lower().strip()
+        preco_atual = Preco_Lanches(lanche)
+        
+        if preco_atual > 0:
+            total_lanches += preco_atual
+            lanches_pedidos.append(lanche.capitalize())
+            print(f"Adicionado! Subtotal lanches: {Conversor_Valor(total_lanches, 'R$')}")
+        else: 
+            print("Lanche inválido!")
 
-    # --- PROCESSO DE COMPRA: BEBIDA ---
-    precoB = 0.00
-    bebida = "nenhuma"
-    if input("Você gostaria de Adicionar uma bebida? (s/n) ").lower().strip() == "s":
+        if input("Deseja pedir outro lanche? (s/n): ").lower().strip() == "n":
+            break
+            
+    # .join() transforma a lista ['Pizza', 'Suco'] em uma string "Pizza, Suco"
+    lanche_final = ", ".join(lanches_pedidos) if lanches_pedidos else "Nenhum"          
+
+    # --- BEBIDAS ---
+    bebidas_pedidas = []
+    preco_total_bebidas = 0.00
+    if input("Você gostaria de adicionar uma bebida? (s/n) ").lower().strip() == "s":
         os.system("cls" if os.name == "nt" else "clear")
         Cardapio_Bebidas()
-        bebida = input("Qual Bebida voce gostaria? ").lower().strip()
-        precoB = Preco_Bebidas(bebida)
-        
-        # Validação de idade para Cerveja
-        if bebida == "cerveja" and not DetectorDidade(idade):
-            print("Sinto muito, você não tem idade para comprar bebidas alcoólicas!")
-            precoB = 0.00
-            bebida = "cancelada (menor de idade)"
-        elif precoB == 0.00:
-            print("Bebida não encontrada!")
-        else:
-            print(f"Bebida adicionada! Preço: {Conversor_Valor(precoB, 'R$')}")
-
-    # --- LOGÍSTICA DE ENTREGA ---
+        while True:
+            item_b = input("Qual bebida você gostaria? ").lower().strip()
+            valor_b = Preco_Bebidas(item_b)
+            
+            # Validação lógica para restrição de idade
+            if item_b == "cerveja" and not DetectorDidade(idade):
+                print("🚫 Venda proibida para menores!")
+            elif valor_b > 0:
+                preco_total_bebidas += valor_b
+                bebidas_pedidas.append(item_b.capitalize())
+                print(f"Adicionado! Subtotal bebidas: {Conversor_Valor(preco_total_bebidas, 'R$')}")
+            else:
+                print("Bebida não encontrada!")
+                
+            if input("Deseja pedir outra bebida? (s/n): ").lower().strip() == "n":
+                break
+    
+    bebida_final = ", ".join(bebidas_pedidas) if bebidas_pedidas else "Nenhuma"
+      
+    # --- LOGÍSTICA ---
     while True:
         try:
             distancia = float(input("Distância para entrega (km): "))
@@ -145,40 +213,53 @@ def main():
 
     clima = input("Clima (ensolarado/chuvoso/nublado): ").lower().strip()
 
-    # Cálculo da taxa baseada em distância
+    # Estrutura de decisão para frete
     if distancia <= 5: taxa = 5.00
     elif distancia <= 10: taxa = 8.00
     else: taxa = 10.00
             
-    # Ajustes dinâmicos usando OPERADORES TERNÁRIOS
+    # OPERADOR TERNÁRIO: Forma compacta de IF/ELSE para atribuição simples
     taxa += 2.00 if clima == "chuvoso" else 0.00
     msg_clima = " (taxa de chuva aplicada)" if clima == "chuvoso" else ""
     
-    # --- FECHAMENTO DA CONTA ---
-    subtotal = preco + precoB + taxa
-    # Aplica desconto se a compra for acima de R$ 40
-    total_final = calcular_Desconto(subtotal) if subtotal >= 40 else subtotal
-    msg_desc = " Parabens! Você ganhou 10% de desconto!" if subtotal >= 40 else ""
+    # --- FECHAMENTO ---
+    subtotal = total_lanches + preco_total_bebidas + taxa
+    
+    # Lógica de Desconto (Corrigida para checar 's')
+    if membro.lower().strip() == "s":
+        total_final = desconto_membro_clube(subtotal)
+    else:
+        total_final = desconto_membro_comum(subtotal)    
 
-    # --- EMISSÃO DO RECIBO FINAL ---
+    # --- RECIBO ---
     os.system("cls" if os.name == "nt" else "clear")
     print("\n" + Criar_Linhas("="))
     print("         RECIBO DE COMPRA")
     print(Criar_Linhas("="))
-    print(f"Lanche:   {lanche.capitalize()} ({Conversor_Valor(preco, 'R$')})")
-    print(f"Bebida:   {bebida.capitalize()} ({Conversor_Valor(precoB, 'R$')})")
+    print(f"Itens: {lanche_final} | Valor Lanches: {Conversor_Valor(total_lanches, 'R$')}")
+    print(f"Bebidas: {bebida_final} | Valor Bebidas: {Conversor_Valor(preco_total_bebidas, 'R$')}")
     print(f"Entrega:  {Conversor_Valor(taxa, 'R$')}{msg_clima}")
     print(Criar_Linhas("-"))
-    print(f"SUBTOTAL: {Conversor_Valor(subtotal, 'R$')}")
-    
-    if subtotal >= 40:
-        print(f"ECONOMIA: {Conversor_Valor(subtotal - total_final, 'R$')}")
-        print(msg_desc)
-        
     print(f"TOTAL A PAGAR: {Conversor_Valor(total_final, 'R$')}")
     print(Criar_Linhas("="))
     print(Despedidas(Nome))
-    print(Criar_Linhas("="))
+    
+    # ATUALIZAÇÃO DO RANKING (Lógica de Acúmulo no Dicionário)
+    historico_faturamento.append(total_final)
+    if Nome in rank_gastos:
+        rank_gastos[Nome] += total_final # Soma se já existe
+    else:
+        rank_gastos[Nome] = total_final  # Cria se for novo
 
+# ---------------------------------------------------------
+# EXECUÇÃO DO PROGRAMA
+# ---------------------------------------------------------
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
+        if input("\nRegistrar novo cliente? (s/n) " ).lower().strip() == "n":
+            break
+    
+    # Limpa a tela e mostra o resumo final antes de fechar
+    os.system("cls" if os.name == "nt" else "clear")
+    exibir_relatorio()
