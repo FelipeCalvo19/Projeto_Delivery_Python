@@ -3,13 +3,13 @@
 # Objetivo: Praticar Listas, Dicionários, Tratamento de Erros e Operadores Ternários.
 # =============================================================================
 import os
-
+from datetime import datetime
 # ---------------------------------------------------------
 # VARIÁVEIS GLOBAIS (ESTADO DO SISTEMA)
 # ---------------------------------------------------------
 # Armazena apenas os números (floats) de cada venda finalizada
 historico_faturamento = [] 
-
+horas = datetime.now().hour
 # Dicionário para o Ranking: Chave = Nome do Cliente | Valor = Total acumulado
 # Escolhemos dicionário pela busca rápida O(1) e facilidade de somar valores por chave
 rank_gastos = {}
@@ -17,13 +17,26 @@ rank_gastos = {}
 # ---------------------------------------------------------
 # FUNÇÕES DE INTERFACE E AUXILIARES
 # ---------------------------------------------------------
+def saudaçao_horario (Horas):
+    horario = datetime.now().hour
+    momento = "nenhum"
+    if 6.00 <= horario < 12:
+        momento = "Dia"
+    elif 12.00 <= horario < 18:
+        momento = "Tarde"
+    elif 19.00 <= horario < 23:
+        momento = "Noite"
+    else: 
+        momento = "madrugada"
 
+    return momento
+     
 def Boas_vindas(Nome):
     """Retorna saudação. Exemplo de uso de f-strings para interpolação."""
-    return f"Oi {Nome}, tudo bem?"
+    return f"Bom {saudaçao_horario(horas)} {Nome}!! tudo bem?"
 
 def Despedidas(Nome):
-    return f"Obrigado por pedir conosco {Nome}! Tenha um ótimo dia!"
+    return f"Obrigado por pedir conosco {Nome}! Tenha um ótimo {saudaçao_horario(horas)}!"
 
 def Criar_Linhas(Divisor):
     """Multiplicação de strings para criar separadores visuais dinâmicos."""
@@ -32,6 +45,8 @@ def Criar_Linhas(Divisor):
 def Conversor_Valor(Valor, cifra):
     """Formatação de moeda usando .2f para garantir duas casas decimais."""
     return f"{cifra}{Valor:.2f}"
+
+       
 
 # ---------------------------------------------------------
 # LÓGICA DE PRODUTOS (CARDÁPIOS)
