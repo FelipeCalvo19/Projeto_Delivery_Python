@@ -4,143 +4,27 @@
 # =============================================================================
 import os
 from datetime import datetime
-# ---------------------------------------------------------
-# VARIÁVEIS GLOBAIS (ESTADO DO SISTEMA)
-# ---------------------------------------------------------
-# Armazena apenas os números (floats) de cada venda finalizada
+from utils import saudaçao_horario
+from utils import Boas_vindas
+from utils import Despedidas
+from utils import Criar_Linhas
+from utils import Conversor_Valor
+from utils import calcular_Desconto
+from utils import DetectorDidade
+from utils import exibir_relatorio
+from estoque import Cardapio_Lanches
+from estoque import Cardapio_Bebidas
+from estoque import Preco_Bebidas
+from estoque import Preco_Lanches
+
 historico_faturamento = [] 
-horas = datetime.now().hour
-# Dicionário para o Ranking: Chave = Nome do Cliente | Valor = Total acumulado
-# Escolhemos dicionário pela busca rápida O(1) e facilidade de somar valores por chave
 rank_gastos = {}
 
-# ---------------------------------------------------------
-# FUNÇÕES DE INTERFACE E AUXILIARES
-# ---------------------------------------------------------
-def saudaçao_horario (Horas):
-    horario = datetime.now().hour
-    momento = "nenhum"
-    if 6.00 <= horario < 12:
-        momento = "Dia"
-    elif 12.00 <= horario < 18:
-        momento = "Tarde"
-    elif 19.00 <= horario < 23:
-        momento = "Noite"
-    else: 
-        momento = "madrugada"
-
-    return momento
-     
-def Boas_vindas(Nome):
-    """Retorna saudação. Exemplo de uso de f-strings para interpolação."""
-    return f"Bom {saudaçao_horario(horas)} {Nome}!! tudo bem?"
-
-def Despedidas(Nome):
-    return f"Obrigado por pedir conosco {Nome}! Tenha um ótimo {saudaçao_horario(horas)}!"
-
-def Criar_Linhas(Divisor):
-    """Multiplicação de strings para criar separadores visuais dinâmicos."""
-    return Divisor * 30
-
-def Conversor_Valor(Valor, cifra):
-    """Formatação de moeda usando .2f para garantir duas casas decimais."""
-    return f"{cifra}{Valor:.2f}"
-
-       
-
-# ---------------------------------------------------------
-# LÓGICA DE PRODUTOS (CARDÁPIOS)
-# ---------------------------------------------------------
-
-def Cardapio_Lanches():
-    """
-    Usa uma Lista de Dicionários. Ideal quando cada item tem múltiplas 
-    propriedades (Nome, Valor, Ingredientes).
-    """
-    cardapio = [
-        {"Lanche": "hambúrguer", "Valor": 10.00, "Ingredientes": "Pão, Carne, Alface..."},
-        {"Lanche": "pizza", "Valor": 20.00, "Ingredientes": "Molho de Tomate, Queijo..."},
-        {"Lanche": "salada", "Valor": 5.00, "Ingredientes": "Alface, Tomate..."}
-    ]
-    print("\n--- CARDÁPIO DE LANCHES ---")
-    for item in cardapio:
-        print(f"{item['Lanche'].capitalize()} - {Conversor_Valor(item['Valor'], 'R$')}\n [{item['Ingredientes']}]")
-        print("-" * 20)
-    print(Criar_Linhas("="))
-
-def Preco_Lanches(Lanche_escolhido):
-    """
-    Usa Dicionário Simples para busca direta. 
-    O método .get() evita erros caso o lanche não exista (retorna 0.00).
-    """
-    Valores = {"hambúrguer": 10.00, "pizza": 20.00, "salada": 5.00}
-    return Valores.get(Lanche_escolhido, 0.00)
-
-def Cardapio_Bebidas():
-    cardapioB = [
-        {"Bebida": "refri", "Valor": 5.00},
-        {"Bebida": "suco", "Valor": 5.50},
-        {"Bebida": "cerveja", "Valor": 6.00}
-    ]
-    print("\n--- CARDÁPIO DE BEBIDAS ---")
-    for item in cardapioB:
-        print(f"{item['Bebida'].capitalize()} - {Conversor_Valor(item['Valor'], 'R$')}")
-        print("-" * 20)
-    print(Criar_Linhas("="))
-
-def Preco_Bebidas(Bebida_escolhida):
-    Valores = {"refri": 5.00, "suco": 5.50, "cerveja": 6.00}
-    return Valores.get(Bebida_escolhida, 0.00)
-
-# ---------------------------------------------------------
-# REGRAS DE NEGÓCIO E VALIDAÇÕES
-# ---------------------------------------------------------
-
-def DetectorDidade(Idade):
-    """Retorna um Booleano (True/False)."""
-    return Idade >= 18
-
-def calcular_Desconto(porcentagem):
-    """
-    Exemplo de 'Closure': Uma função que fabrica outra função.
-    Útil para fixar uma taxa de desconto e reutilizá-la depois.
-    """
-    def aplicar(valor_total):
-        return valor_total * porcentagem
-    return aplicar
 
 # Criando as instâncias de desconto (80% do valor e 90% do valor)
 desconto_membro_clube = calcular_Desconto(0.8)
 desconto_membro_comum = calcular_Desconto(0.9)
-
-def exibir_relatorio():
-    """Processa e exibe os dados acumulados durante a execução."""
-    print("\n" + Criar_Linhas("="))
-    print("       RELATÓRIO DO DIA")
-    print(Criar_Linhas("="))
-    
-    # sum() percorre a lista historico_faturamento e soma tudo
-    total = sum(historico_faturamento)
-    print(f"Faturamento total: {Conversor_Valor(total, 'R$')}")
-    print(f"Total de vendas:   {len(historico_faturamento)}")
-    
-    print(Criar_Linhas("="))
-    print("-----RANK-----")
-    
-    # ORDENAÇÃO: sorted() transforma o dicionário em uma lista de tuplas ordenada.
-    # key=lambda item: item[1] diz para ordenar pelo VALOR (gasto), não pela CHAVE (nome).
-    # reverse=True coloca do maior para o menor.
-    rankcliente = sorted(rank_gastos.items(), key=lambda item: item[1], reverse=True)
-    
-    # len() no dicionário conta quantos Nomes únicos existem.
-    QuantCliente = len(rank_gastos)
-    print(f"Quantidade de Clientes Únicos: {QuantCliente}")
-    
-    # Desempacotamento de Tuplas (cliente, gasto) vindo da lista ordenada
-    for cliente, gasto in rankcliente:
-        print(f"Cliente: {cliente.capitalize()}  | Total: {Conversor_Valor(gasto, 'R$')}")
-        
-    print(Criar_Linhas("="))   
+ 
 
 # ---------------------------------------------------------
 # FLUXO PRINCIPAL DO SISTEMA
@@ -277,4 +161,4 @@ if __name__ == "__main__":
     
     # Limpa a tela e mostra o resumo final antes de fechar
     os.system("cls" if os.name == "nt" else "clear")
-    exibir_relatorio()
+    exibir_relatorio(historico_faturamento, rank_gastos)
