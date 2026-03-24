@@ -12,10 +12,8 @@ from utils import Conversor_Valor
 from utils import calcular_Desconto
 from utils import DetectorDidade
 from utils import exibir_relatorio
-from estoque import Cardapio_Lanches
-from estoque import Cardapio_Bebidas
-from estoque import Preco_Bebidas
-from estoque import Preco_Lanches
+from models.bebida import Cardapio_Bebidas
+from models.lanche import Cardapio
 
 historico_faturamento = [] 
 rank_gastos = {}
