@@ -1,40 +1,10 @@
-from datetime import datetime
+from views import criar_linhas, conversor_valor
 
-horas = datetime.now().hour
-
-def saudaçao_horario (Horas):
-    horario = datetime.now().hour
-    momento = "nenhum"
-    if 6 <= horario < 12:
-        momento = "Dia"
-    elif 12 <= horario < 18:
-        momento = "Tarde"
-    elif 19 <= horario < 23:
-        momento = "Noite"
-    else: 
-        momento = "madrugada"
-    return momento
-
-def Boas_vindas(Nome):
-    """Retorna saudação. Exemplo de uso de f-strings para interpolação."""
-    return f"Bom {saudaçao_horario(horas)} {Nome}!! tudo bem?"
-
-def Despedidas(Nome):
-    return f"Obrigado por pedir conosco {Nome}! Tenha um ótimo {saudaçao_horario(horas)}!"
-
-def Criar_Linhas(Divisor):
-    """Multiplicação de strings para criar separadores visuais dinâmicos."""
-    return Divisor * 30
-
-def Conversor_Valor(Valor, cifra):
-    """Formatação de moeda usando .2f para garantir duas casas decimais."""
-    return f"{cifra}{Valor:.2f}"
-
-def DetectorDidade(Idade):
+def detector_de_idade(Idade):
     """Retorna um Booleano (True/False)."""
     return Idade >= 18
 
-def calcular_Desconto(porcentagem):
+def calcular_desconto(porcentagem):
     """
     Exemplo de 'Closure': Uma função que fabrica outra função.
     Útil para fixar uma taxa de desconto e reutilizá-la depois.
@@ -46,16 +16,16 @@ def calcular_Desconto(porcentagem):
 
 def exibir_relatorio(historico_faturamento, rank_gastos):
     """Processa e exibe os dados acumulados durante a execução."""
-    print("\n" + Criar_Linhas("="))
+    print("\n" + criar_linhas("="))
     print("       RELATÓRIO DO DIA")
-    print(Criar_Linhas("="))
+    print(criar_linhas("="))
     
     
     total = sum(historico_faturamento)
-    print(f"Faturamento total: {Conversor_Valor(total, 'R$')}")
+    print(f"Faturamento total: {conversor_valor(total, 'R$')}")
     print(f"Total de vendas:   {len(historico_faturamento)}")
     
-    print(Criar_Linhas("="))
+    print(criar_linhas("="))
     print("-----RANK-----")
     
   
@@ -66,6 +36,8 @@ def exibir_relatorio(historico_faturamento, rank_gastos):
     print(f"Quantidade de Clientes Únicos: {QuantCliente}")
     
     for cliente, gasto in rankcliente:
-        print(f"Cliente: {cliente.capitalize()}  | Total: {Conversor_Valor(gasto, 'R$')}")
+        print(f"Cliente: {cliente.capitalize()}  | Total: {conversor_valor(gasto, 'R$')}")
         
-    print(Criar_Linhas("="))   
+    print(criar_linhas("="))   
+
+
